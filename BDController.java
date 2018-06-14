@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by Gleidson Viana on 10/06/2018.
- */
 
 public class BDController {
     private SQLiteDatabase db;
@@ -17,7 +14,7 @@ public class BDController {
         banco = new CriarBD(context);
     }
 
-    public String insereDado(String _id,String titulo,String artista,String duracao,String data,String display_name,String flgFavorito, String flgExcluir){
+    public String insereDado(String _id,String titulo,String artista,String duracao,String data,String display_name,int flgFavorito, int flgExcluir){
         ContentValues valores;
         long resultado;
 
@@ -42,7 +39,7 @@ public class BDController {
     }
 
 
-    public Cursor carregaDados(boolean fav, Boolean exc){
+    public Cursor carregaDados(boolean fav, boolean exc){
         Cursor cursor;
         String[] campos =  {
                 banco._id,
@@ -78,7 +75,7 @@ public class BDController {
         return cursor;
     }
 
-    public void marcarRegistroParaEcluir(int id,String flgMarcarExcluir){
+    public void marcarRegistroParaEcluir(int id,int flgMarcarExcluir){
         //seta 1 para excluir ou zero para não
         ContentValues valores;
         String where;
@@ -89,13 +86,16 @@ public class BDController {
 
         valores = new ContentValues();
         valores.put(CriarBD.flgExcluir, flgMarcarExcluir);
+        if(flgMarcarExcluir==1) {
+            valores.put(CriarBD.flgFavorito, 0);
+        }
 
         db.update(CriarBD.tabela,valores,where,null);
         db.close();
     }
 
 
-    public void marcarRegistroParaFavorito(int id,String flgMarcarFavorito){
+    public void marcarRegistroParaFavorito(int id,int flgMarcarFavorito){
         //seta 1 para favorito ou zero para não
         ContentValues valores;
         String where;
@@ -106,7 +106,9 @@ public class BDController {
 
         valores = new ContentValues();
         valores.put(CriarBD.flgFavorito, flgMarcarFavorito);
-
+        if(flgMarcarFavorito==1) {
+            valores.put(CriarBD.flgExcluir,0);
+        }
         db.update(CriarBD.tabela,valores,where,null);
         db.close();
     }
