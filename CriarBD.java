@@ -18,7 +18,7 @@ public class CriarBD extends SQLiteOpenHelper {
     public static final String display_name = "display_name";
     public static final String flgFavorito = "flgFavorito";
     public static final String flgExcluir = "flgExcluir";
-    private static final int versao = 4;
+    private static final int versao = 10;
 
     public CriarBD(Context context){
         super(context, nome_banco,null,versao);
@@ -32,17 +32,25 @@ public class CriarBD extends SQLiteOpenHelper {
                 + titulo + " text,"
                 + artista + " text,"
                 + duracao + " text,"
-                + data + " text,"
+                + data + " text unique,"
                 + display_name + " text,"
-                + flgFavorito + " text,"
-                + flgExcluir + " text "
+                + flgFavorito + " integer,"
+                + flgExcluir + " integer "
                 +")";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + tabela);
-        onCreate(db);
+
+        //verificar as versoes e fazer so as alterações necessárias nas tabelas que teve mudanças
+        if(newVersion == 2 && oldVersion == 1) {
+            String sql = "ALTER TABLE...";//tabela tal...
+            db.execSQL(sql);
+        }
+
+
+        //db.execSQL("DROP TABLE IF EXISTS " + tabela);
+       // onCreate(db);//nao criar, so se realmente necessitar
     }
 }
